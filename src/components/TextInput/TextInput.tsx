@@ -20,6 +20,8 @@ export function TextInput({
       <Input
         placeholder={placeholder}
         rounded="xl"
+        padding={2}
+        pl={4}
         borderColor="blue.400"
         borderWidth={2}
         {...rnTextInputProps}

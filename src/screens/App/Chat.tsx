@@ -11,8 +11,11 @@ import {
 
 import { getAuth } from "firebase/auth";
 
-import { Box, HStack, Text } from "native-base";
+import { Box, HStack } from "native-base";
 import { GiftedChat } from "react-native-gifted-chat";
+
+import Logo from '../../assets/logo.svg';
+
 export function Chat() {
   const [messages, setMessages] = useState<any[]>([]);
 
@@ -62,9 +65,7 @@ export function Chat() {
           borderBottomColor="gray.200"
           borderBottomWidth={1}
         >
-          <Text color="blue.400" fontSize="lg" bold>
-            BubleChat 🗨️
-          </Text>
+          <Logo width={60} height={60} />
         </Box>
       </HStack>
       <GiftedChat
