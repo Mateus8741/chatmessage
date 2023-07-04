@@ -52,7 +52,7 @@ export function Login() {
       justifyContent="center"
     >
       <Text fontSize="5xl" bold color="blue.400" mb={4} shadow={2}>
-        Log in 🗨️
+        Log in
       </Text>
 
       <FormControl mb={4}>
