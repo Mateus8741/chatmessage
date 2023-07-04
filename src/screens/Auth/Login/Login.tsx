@@ -1,35 +1,46 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  HStack,
-  Input,
-  Link,
-  Text,
-} from "native-base";
+import { Box, Button, FormControl, HStack, Link, Text } from "native-base";
 import React from "react";
+import { Alert } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { AppStackProps } from "../AppStack";
+import { useForm } from "react-hook-form";
+import { FormTextInput } from "../../../components/Form/FormTextInput";
+import { AppStackProps } from "../../../routes/AppStack";
+import { LoginSchema } from "./loginScheema";
 
 export function Login() {
   const { navigate } = useNavigation<AppStackProps>();
 
-  function loginWithGoogle() {
-    const auth = getAuth();
-    const email = "teste@gmail.com";
-    const password = "123456";
+  const { control, handleSubmit } = useForm<LoginSchema>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
 
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log("Login error ======>", errorCode, errorMessage);
-    });
+  function loginWithEmail({ email, password }: LoginSchema) {
+    const auth = getAuth();
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((user) => {
+        if (user) {
+          navigate("Chat");
+        } else {
+          Alert.alert("Não foi possível realizar o login");
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("Login error ======>", errorCode, errorMessage);
+        Alert.alert("Usuário não encontrado");
+      });
   }
 
   function goToSignIn() {
-    navigate("SignIn");
+    navigate("SignUp");
   }
 
   return (
@@ -45,27 +56,23 @@ export function Login() {
       </Text>
 
       <FormControl mb={4}>
-        <FormControl.Label>Email</FormControl.Label>
-        <Input
+        <FormTextInput
+          name="email"
+          control={control}
+          label="Email"
           placeholder="Digite seu e-mail"
-          mb={4}
-          rounded="xl"
-          borderColor="blue.400"
-          borderWidth={2}
         />
 
-        <FormControl.Label>Senha</FormControl.Label>
-        <Input
+        <FormTextInput
+          name="password"
+          control={control}
+          label="Senha"
           placeholder="Digite sua senha"
-          mb={4}
-          rounded="xl"
-          borderColor="blue.400"
-          borderWidth={2}
         />
       </FormControl>
 
       <Button
-        onPress={loginWithGoogle}
+        onPress={handleSubmit(loginWithEmail)}
         mb={4}
         rounded="xl"
         bg="blue.400"

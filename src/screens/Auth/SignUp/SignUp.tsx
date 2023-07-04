@@ -1,34 +1,38 @@
-import {
-    Box,
-    Button,
-    FormControl,
-    HStack,
-    Input,
-    Link,
-    Text,
-} from "native-base";
+import { Box, Button, FormControl, HStack, Link, Text } from "native-base";
 import React from "react";
 
 import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-import { AppStackProps } from "../AppStack";
+import { useForm } from "react-hook-form";
+import { Alert } from "react-native";
+import { FormTextInput } from "../../../components/Form/FormTextInput";
+import { AppStackProps } from "../../../routes/AppStack";
+import { SignUpSchema } from "./signUpScheema";
 
-export function SignIn() {
+export function SignUp() {
   const { navigate } = useNavigation<AppStackProps>();
+  const { control, handleSubmit } = useForm<SignUpSchema>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    mode: "onChange",
+  });
 
   function goToLogin() {
     navigate("Login");
   }
 
-  function registerWithGoogle() {
+  function registerWithGoogle({ email, password }: SignUpSchema) {
     const auth = getAuth();
-    const email = "teste3@teste.com";
-    const password = "123456";
 
-    createUserWithEmailAndPassword(auth, email, password).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log("Register error ======>", errorCode, errorMessage);
+    createUserWithEmailAndPassword(auth, email, password).then((user) => {
+      if (user) {
+        navigate("Login");
+        Alert.alert("Conta criada com sucesso! Agora você pode fazer o login");
+      } else {
+        Alert.alert("Não foi possível realizar o login");
+      }
     });
   }
 
@@ -41,31 +45,27 @@ export function SignIn() {
       justifyContent="center"
     >
       <Text fontSize="5xl" bold color="blue.400" mb={4} shadow={2}>
-        Sign In 🗨️
+        Sign Up 🗨️
       </Text>
 
       <FormControl mb={4}>
-        <FormControl.Label>Email</FormControl.Label>
-        <Input
+        <FormTextInput
+          name="email"
+          control={control}
+          label="Email"
           placeholder="Digite seu e-mail"
-          mb={4}
-          rounded="xl"
-          borderColor="blue.400"
-          borderWidth={2}
         />
 
-        <FormControl.Label>Senha</FormControl.Label>
-        <Input
+        <FormTextInput
+          name="password"
+          control={control}
+          label="Senha"
           placeholder="Digite sua senha"
-          mb={4}
-          rounded="xl"
-          borderColor="blue.400"
-          borderWidth={2}
         />
       </FormControl>
 
       <Button
-        onPress={registerWithGoogle}
+        onPress={handleSubmit(registerWithGoogle)}
         mb={4}
         rounded="xl"
         bg="blue.400"

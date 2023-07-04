@@ -1,10 +1,10 @@
 import { NativeBaseProvider } from "native-base";
-import { Routes } from "./src/Routes";
+import { Routes } from "./src/routes/Routes";
 
 import { StatusBar } from "react-native";
 import "./firebaseConfig";
 
-export default function App() {
+export function App() {
   return (
     <NativeBaseProvider>
       <StatusBar backgroundColor="#fff" barStyle="dark-content" translucent />
